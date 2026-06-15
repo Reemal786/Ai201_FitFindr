@@ -140,7 +140,7 @@ flowchart TD
 
 **Milestone 3 — Individual tool implementations:**
 
-I will use ChatGPT or Claude to help implement each tool one at a time. For `search_listings`, I will provide the Tool 1 specification from this planning document and ask the AI to implement the function using `load_listings()` from `utils/data_loader.py`. I will verify the output by testing at least three searches: one that returns results, one that returns no results, and one that checks the max price filter.
+I will use ChatGPT to help implement each tool one at a time. For `search_listings`, I will provide the Tool 1 specification from this planning document and ask the AI to implement the function using `load_listings()` from `utils/data_loader.py`. I will verify the output by testing at least three searches: one that returns results, one that returns no results, and one that checks the max price filter.
 
 For `suggest_outfit`, I will provide the Tool 2 specification, the wardrobe schema, and an example selected listing. I expect the AI to produce a function that calls Groq’s `llama-3.3-70b-versatile` model and handles an empty wardrobe without crashing. I will verify it by testing it once with `get_example_wardrobe()` and once with `get_empty_wardrobe()`.
 
@@ -148,7 +148,7 @@ For `create_fit_card`, I will provide the Tool 3 specification, a sample outfit 
 
 **Milestone 4 — Planning loop and state management:**
 
-I will use ChatGPT or Claude to help implement the planning loop in `agent.py`. I will provide the Planning Loop, State Management section, Error Handling table, and Architecture diagram from this document. I expect the AI to produce a `run_agent()` function that calls tools conditionally, stores outputs in the session dictionary, and stops early when `search_listings` returns no results.
+I will use ChatGPT to help implement the planning loop in `agent.py`. I will provide the Planning Loop, State Management section, Error Handling table, and Architecture diagram from this document. I expect the AI to produce a `run_agent()` function that calls tools conditionally, stores outputs in the session dictionary, and stops early when `search_listings` returns no results.
 
 Before using the code, I will review whether the agent calls `suggest_outfit` only when search results exist and calls `create_fit_card` only when an outfit suggestion exists. I will test a full successful query and a no-results query to confirm that state passes correctly between tools and that the error path works.
 
@@ -206,3 +206,27 @@ Found item: Faded Band Tee — $22 on Depop, good condition.
 Outfit idea: Pair it with baggy jeans and chunky sneakers for a relaxed vintage streetwear look. Add simple jewelry or a zip hoodie if you want to layer it.
 
 Fit card: thrifted this faded band tee for $22 and styled it with baggy denim + chunky sneakers for an easy 90s streetwear fit.
+
+## Spec Reflection
+
+### One way the spec helped during implementation
+
+The planning document helped me break the project into smaller components before writing code. Defining the inputs, outputs, and failure modes for each tool made it easier to implement and test each function independently before connecting them through the planning loop.
+
+### One way the implementation differed from the spec
+
+In the planning phase, I expected search_listings to use a more advanced relevance ranking system. During implementation, I used keyword-overlap scoring because it was simpler, easier to debug, and worked well with the small mock dataset while still meeting the project requirements.
+
+## AI Usage
+
+### Instance 1
+
+I provided ChatGPT with the Tool 1 specification from planning.md, including the required inputs, outputs, and failure mode for search_listings(). ChatGPT generated an initial implementation that filtered listings and ranked them by keyword overlap.
+
+After testing, I encountered a TypeError because some listing fields contained None values. I modified the generated code to safely handle missing values before joining strings.
+
+### Instance 2
+
+I provided ChatGPT with the Planning Loop, State Management section, and architecture diagram from planning.md and asked it to implement run_agent() in agent.py.
+
+The generated code correctly connected the three tools, but I reviewed it to ensure the agent stopped early when search_listings() returned no results. I tested both the successful path and the no-results path before accepting the implementation.
